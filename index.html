@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Card Manager</title>
+    <link rel="icon" href="favicon.png" type="image/x-icon" />
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body class="dark-theme">
+    <div class="app container">
+      <div class="header">
+        <h1 class="title">Card Manager</h1>
+        <div class="finder-bar">
+          <label class="search-box">
+            <input type="text" oninput="search(event.target.value)" placeholder="Type to search..." />
+            <div class="icon">
+              <i class="bi bi-search"></i>
+            </div>
+          </label>
+
+          <div class="breadcrumbs"></div>
+        </div>
+
+        <div class="actions">
+          <button class="button" onclick="ItemModal.toggle()">New Card</button>
+          <button class="button" onclick="ItemModal.toggle(null, 'deck')">New Deck</button>
+          <button class="button edit-mode" onclick="toggleEditMode()">Edit</button>
+        </div>
+
+        <button class="theme-toggle" onclick="toggleTheme()"></button>
+      </div>
+
+      <div class="item-container"></div>
+
+      <div class="item-modal modal hidden" onclick="ItemModal.toggle()">
+        <div class="modal-content" onclick="stopPropagation(event)">
+          <button class="close" onclick="ItemModal.toggle()">
+            <i class="bi bi-x-lg"></i>
+          </button>
+          <div class="title">Add a new Item</div>
+
+          <label class="icon-input">
+            <span>Upload an icon</span>
+            <input type="file" class="hidden" accept="image/*" />
+          </label>
+
+          <input class="name-input" type="text" placeholder="Enter item name" />
+
+          <textarea class="description-input" placeholder="Item description"></textarea>
+
+          <div class="actions">
+            <button class="submit button">Submit</button>
+            <button class="delete button bg-red">Delete</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="details-modal modal hidden" onclick="DetailsModal.toggle()">
+        <div class="modal-content">
+          <button class="close">
+            <i class="bi bi-x-lg"></i>
+          </button>
+
+          <div class="title">Item details</div>
+          <img src="" class="image" />
+          <div class="name">Item Name</div>
+
+          <div class="description">Item description</div>
+        </div>
+      </div>
+
+      <div class="toast-container"></div>
+    </div>
+  </body>
+</html>

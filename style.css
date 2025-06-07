@@ -1,0 +1,306 @@
+/*==================== GOOGLE FONTS ====================*/
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+/*==================== BOOTSTRAP ICONS ====================*/
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css");
+
+:root {
+  --bg-color: #ffffff;
+  --text-color: #333;
+  --border-color: rgba(0, 0, 0, 0.5);
+  --label-color: rgba(173, 216, 230, 0.5);
+  --red: #f44336;
+  --green: #4caf50;
+  --blue: #3f51b5;
+}
+
+.dark-theme {
+  --bg-color: #222;
+  --text-color: #eee;
+  --border-color: rgba(255, 255, 255, 0.5);
+  --label-color: rgba(93, 173, 226, 0.5);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  border: none;
+  text-decoration: none;
+  line-height: 1;
+}
+
+a,
+button {
+  cursor: pointer;
+}
+
+.button {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: var(--green);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.truncated {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.hidden-cursor {
+  cursor: none !important;
+}
+
+input[type="text"] {
+  padding: 5px;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color);
+}
+
+textarea {
+  padding: 5px;
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  overflow: hidden;
+}
+
+.bg-red {
+  background-color: var(--red);
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.modal .modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  background-color: var(--bg-color);
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal .close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 0;
+  background-color: transparent;
+  color: var(--text-color);
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.container {
+  max-width: 768px;
+  margin: auto;
+}
+
+.app {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  padding-top: 40px;
+}
+
+.header {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.header .finder-bar {
+  display: flex;
+  gap: 10px;
+}
+
+.header .search-box {
+  display: inline-flex;
+  border: 1px solid var(--border-color);
+  border-radius: 50px;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 15px;
+}
+
+.header .search-box input {
+  flex: 1;
+  border: none;
+}
+
+.header .breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.header .breadcrumbs * {
+  background-color: transparent;
+  color: var(--text-color);
+  font-size: 1rem;
+}
+
+.header .actions {
+  display: flex;
+  gap: 10px;
+}
+
+.header .edit-mode {
+  background-color: transparent;
+  border: 1px solid;
+  border-color: var(--border-color);
+  color: var(--text-color);
+}
+
+.header .edit-mode.active {
+  background-color: var(--blue);
+  border-color: transparent;
+  color: white;
+}
+
+.header .theme-toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 2rem;
+  padding: 0;
+  background-color: transparent;
+  color: var(--text-color);
+}
+
+.item-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.item-container .item {
+  position: relative;
+  width: 100px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.item-container .deck {
+  background-color: var(--text-color);
+  color: var(--bg-color);
+}
+
+.item-container .item * {
+  position: relative;
+  width: 100%;
+}
+
+.item-container .item img {
+  max-height: 150px;
+  border: 2px solid transparent;
+  object-fit: cover;
+}
+
+.item-container .item.selected img {
+  border-color: var(--text-color);
+}
+
+.item-container .item p {
+  padding: 5px;
+}
+
+.item-modal .icon-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
+  border: 2px dashed;
+  border-color: var(--border-color);
+  width: 100%;
+  height: 64px;
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.item-modal .description-input {
+  resize: none;
+  height: 80px;
+}
+
+.item-modal .actions {
+  display: flex;
+  gap: 5px;
+}
+
+.item-modal .actions > * {
+  flex: 1;
+}
+
+.details-modal .modal-content {
+  width: max-content;
+}
+
+.details-modal .image {
+  width: 200px;
+  max-height: 400px;
+  object-fit: contain;
+}
+
+.toast-container {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.toast {
+  background-color: var(--text-color);
+  color: var(--bg-color);
+  padding: 12px 20px;
+  border-radius: 5px;
+}
+
+/* Medium screens (Tablets, up to 768px wide) */
+@media (max-width: 768px) {
+  .app {
+    padding: 10px;
+  }
+}
+
+/* Small screens (Phones, up to 480px wide) */
+@media (max-width: 480px) {
+}
