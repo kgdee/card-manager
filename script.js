@@ -8,7 +8,7 @@ const defaultIcon = "icon-default.png";
 const rootFolder = { id: null, name: "Root", path: [] };
 let currentItems = JSON.parse(localStorage.getItem(`${projectName}_items`)) || [];
 let currentFolder = rootFolder;
-let editMode = true;
+let editMode = false;
 
 let darkTheme = JSON.parse(localStorage.getItem(`${projectName}_darkTheme`)) || false;
 
@@ -125,24 +125,24 @@ const ItemModal = (() => {
 
     if (!isFileSizeAllowed(file)) {
       Toast.show("That file is too large. Please select a file smaller than 5MB.");
-      event.target.value = ""
-      return
+      event.target.value = "";
+      return;
     }
 
     iconInput.style.backgroundImage = file ? `url(${URL.createObjectURL(file)})` : null;
   };
 
-  async function getItemData() {
-    const item = {
-      id: crypto.randomUUID(),
-      name: nameInput.value,
-      type: currentItemType,
-      parentId: currentFolder.id,
-      path: [...currentFolder.path, { id: currentFolder.id, name: currentFolder.name }],
-      description: descriptionInput.value,
-      icon: iconFileInput.value ? await getFileContent(iconFileInput.files[0]) : null,
+  async function getItemData(item = {}) {
+    const itemData = {
+      id: item.id || crypto.randomUUID(),
+      name: nameInput.value || item.name,
+      type: item.type || currentItemType,
+      parentId: item.parentId || currentFolder.id,
+      path: item.path || [...currentFolder.path, { id: currentFolder.id, name: currentFolder.name }],
+      description: descriptionInput.value || item.description,
+      icon: iconFileInput.value ? await getFileContent(iconFileInput.files[0]) : item.icon || null,
     };
-    return item;
+    return itemData;
   }
 
   function toggle(itemId, itemType) {
@@ -163,7 +163,7 @@ const ItemModal = (() => {
       deleteBtn.classList.toggle("hidden", false);
       const itemIndex = currentItems.indexOf(item);
       submitBtn.onclick = async () => {
-        updateItem(itemIndex, await getItemData());
+        updateItem(itemIndex, await getItemData(item));
         toggle();
       };
       deleteBtn.onclick = () => {
@@ -215,23 +215,26 @@ function toggleTheme(force = undefined) {
 
 const Toast = (() => {
   const container = document.querySelector(".toast-container");
-  let itemCount = 0;
+  let currentItems = [];
 
   function show(message) {
     if (!message) return;
-    const index = itemCount;
+    const item = crypto.randomUUID();
+    currentItems.push(item);
     container.innerHTML += `
-      <div class="toast" data-toast="${index}">
+      <div class="toast" data-toast="${item}">
         ${message}
       </div>
     `;
+    container.classList.remove("hidden");
 
     setTimeout(() => {
-      const item = container.querySelector(`[data-toast="${index}"]`);
-      item.remove();
+      const itemEl = container.querySelector(`[data-toast="${item}"]`);
+      itemEl.remove();
+      const itemToFilter = item;
+      currentItems = currentItems.filter((item) => item !== itemToFilter);
+      if (currentItems.length <= 0) container.classList.add("hidden");
     }, 3000);
-
-    itemCount++;
   }
 
   return { show };
@@ -251,15 +254,15 @@ function toggleEditMode() {
 
 function displayBreadcrumbs() {
   breadcrumbs.innerHTML = "";
-  if (currentFolder?.path)
-    breadcrumbs.innerHTML += currentFolder.path
-      .map(
-        (route) => `
+  breadcrumbs.innerHTML += currentFolder.path
+    .map(
+      (route) => `
             <button onclick="openFolder('${route.id}')">${route.name}</button> /
           `
-      )
-      .join("");
+    )
+    .join("");
   breadcrumbs.innerHTML += `<button>${currentFolder.name}</button>`;
+  breadcrumbs.scrollLeft = breadcrumbs.scrollWidth;
 }
 
 function exportItems() {
@@ -300,5 +303,5 @@ function importItems() {
 function isFileSizeAllowed(file) {
   const maxSize = 5 * 1024 * 1024; // 5 MB in bytes
 
-  return file.size > maxSize ? false : true
+  return file.size > maxSize ? false : true;
 }

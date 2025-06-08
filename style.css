@@ -30,6 +30,12 @@
   border: none;
   text-decoration: none;
   line-height: 1;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
 }
 
 a,
@@ -39,7 +45,7 @@ button {
 
 .button {
   display: inline-block;
-  padding: 0.5rem 1rem;
+  padding: 8px 16px;
   background: var(--green);
   color: white;
   border: none;
@@ -126,7 +132,8 @@ body {
 }
 
 .app {
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   position: relative;
   width: 100%;
   height: 100vh;
@@ -137,37 +144,45 @@ body {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   margin-bottom: 25px;
 }
 
 .header .finder-bar {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
+  row-gap: 4px;
 }
 
 .header .search-box {
   display: inline-flex;
-  border: 1px solid var(--border-color);
+  background-color: var(--text-color);
+  color: var(--bg-color);
   border-radius: 50px;
   justify-content: space-between;
   align-items: center;
-  gap: 5px;
-  padding: 5px 15px;
+  gap: 4px;
+  padding: 4px 8px;
 }
 
 .header .search-box input {
   flex: 1;
+  padding: 0;
   border: none;
+  color: var(--bg-color);
 }
 
 .header .breadcrumbs {
   display: flex;
-  flex-wrap: nowrap;
   align-items: center;
-  gap: 5px;
+  overflow-x: auto;
+  gap: 4px;
   cursor: pointer;
+  padding: 4px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  max-width: 100%;
 }
 
 .header .breadcrumbs * {
@@ -180,11 +195,12 @@ body {
 .header .actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 4px;
 }
 
 .header .actions > * {
   min-width: 80px;
+  padding: 4px 8px;
 }
 
 .header .edit-mode {
@@ -223,6 +239,7 @@ body {
 .item-container .item {
   position: relative;
   width: 100px;
+  height: max-content;
   text-align: center;
   cursor: pointer;
 }
@@ -293,12 +310,14 @@ body {
 
 .toast-container {
   position: fixed;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 0;
+  left: 0;
+  width: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 5px;
+  padding: 10px;
 }
 
 .toast {
@@ -306,6 +325,8 @@ body {
   color: var(--bg-color);
   padding: 12px 20px;
   border-radius: 5px;
+  width: max-content;
+  max-width: 100%;
 }
 
 /* Medium screens (Tablets, up to 768px wide) */
@@ -317,9 +338,14 @@ body {
 
 /* Small screens (Phones, up to 480px wide) */
 @media (max-width: 480px) {
+  .header .title {
+    font-size: 1.5rem;
+  }
+
   .header .finder-bar {
     flex-direction: column;
   }
+
   .header .finder-bar > * {
     flex: 1;
   }
