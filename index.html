@@ -12,7 +12,10 @@
   <body class="dark-theme">
     <div class="app container">
       <div class="header">
-        <h1 class="title">Card Manager</h1>
+        <div class="main-bar">
+          <h1 class="title">Card Manager</h1>
+          <button class="theme-toggle" onclick="toggleTheme()"></button>
+        </div>
         <div class="finder-bar">
           <label class="search-box">
             <input type="text" oninput="search(event.target.value)" placeholder="Type to search..." />
@@ -31,11 +34,9 @@
           <button class="button export" onclick="exportItems()">Export</button>
           <label class="button import" onchange="importItems()">
             Import
-            <input type="file" class="hidden">
+            <input type="file" class="hidden" />
           </label>
         </div>
-
-        <button class="theme-toggle" onclick="toggleTheme()"></button>
       </div>
 
       <div class="item-container"></div>
