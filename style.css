@@ -11,6 +11,7 @@
   --red: #f44336;
   --green: #4caf50;
   --blue: #3f51b5;
+  --lightblue: #2196f3;
 }
 
 .dark-theme {
@@ -45,6 +46,7 @@ button {
   border-radius: 4px;
   cursor: pointer;
   font-size: 1rem;
+  white-space: nowrap;
 }
 
 .truncated {
@@ -177,7 +179,12 @@ body {
 
 .header .actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
+}
+
+.header .actions > * {
+  min-width: 80px;
 }
 
 .header .edit-mode {
@@ -188,9 +195,13 @@ body {
 }
 
 .header .edit-mode.active {
-  background-color: var(--blue);
+  background-color: var(--red);
   border-color: transparent;
   color: white;
+}
+
+.header .import, .header .export {
+  background-color: var(--blue);
 }
 
 .header .theme-toggle {

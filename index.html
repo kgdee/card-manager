@@ -28,6 +28,11 @@
           <button class="button" onclick="ItemModal.toggle()">New Card</button>
           <button class="button" onclick="ItemModal.toggle(null, 'deck')">New Deck</button>
           <button class="button edit-mode" onclick="toggleEditMode()">Edit</button>
+          <button class="button export" onclick="exportItems()">Export</button>
+          <label class="button import" onchange="importItems()">
+            Import
+            <input type="file" class="hidden">
+          </label>
         </div>
 
         <button class="theme-toggle" onclick="toggleTheme()"></button>

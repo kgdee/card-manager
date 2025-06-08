@@ -4,7 +4,7 @@ const searchBox = document.querySelector(".search-box");
 const breadcrumbs = document.querySelector(".breadcrumbs");
 const editModeBtn = document.querySelector(".edit-mode");
 
-const defaultIcon = "icon-default.png"
+const defaultIcon = "icon-default.png";
 const rootFolder = { id: null, name: "Root", path: [] };
 let currentItems = JSON.parse(localStorage.getItem(`${projectName}_items`)) || [];
 let currentFolder = rootFolder;
@@ -121,12 +121,18 @@ const ItemModal = (() => {
   let currentItemType = "card";
 
   iconFileInput.oninput = (event) => {
-    const file = event.target.files[0]
+    const file = event.target.files[0];
 
-    iconInput.style.backgroundImage = file ? `url(${URL.createObjectURL(file)})` : null
-  }
+    if (!isFileSizeAllowed(file)) {
+      Toast.show("That file is too large. Please select a file smaller than 5MB.");
+      event.target.value = ""
+      return
+    }
 
-  function getItemData() {
+    iconInput.style.backgroundImage = file ? `url(${URL.createObjectURL(file)})` : null;
+  };
+
+  async function getItemData() {
     const item = {
       id: crypto.randomUUID(),
       name: nameInput.value,
@@ -134,7 +140,7 @@ const ItemModal = (() => {
       parentId: currentFolder.id,
       path: [...currentFolder.path, { id: currentFolder.id, name: currentFolder.name }],
       description: descriptionInput.value,
-      icon: iconFileInput.value ? URL.createObjectURL(iconFileInput.files[0]) : null,
+      icon: iconFileInput.value ? await getFileContent(iconFileInput.files[0]) : null,
     };
     return item;
   }
@@ -145,9 +151,9 @@ const ItemModal = (() => {
     iconFileInput.value = "";
     title.textContent = `Create a new ${currentItemType}`;
     submitBtn.textContent = "Create";
-    submitBtn.onclick = () => createItem(getItemData());
+    submitBtn.onclick = async () => createItem(await getItemData());
     deleteBtn.classList.toggle("hidden", true);
-    iconInput.style.backgroundImage = null
+    iconInput.style.backgroundImage = null;
     nameInput.value = "";
     descriptionInput.value = "";
 
@@ -156,10 +162,16 @@ const ItemModal = (() => {
       submitBtn.textContent = "Update";
       deleteBtn.classList.toggle("hidden", false);
       const itemIndex = currentItems.indexOf(item);
-      submitBtn.onclick = () => updateItem(itemIndex, getItemData());
-      deleteBtn.onclick = () => deleteItem(itemIndex);
+      submitBtn.onclick = async () => {
+        updateItem(itemIndex, await getItemData());
+        toggle();
+      };
+      deleteBtn.onclick = () => {
+        deleteItem(itemIndex);
+        toggle();
+      };
 
-      iconInput.style.backgroundImage = `url(${item.icon || defaultIcon})`
+      iconInput.style.backgroundImage = `url(${item.icon || defaultIcon})`;
 
       nameInput.value = item.name || "";
       descriptionInput.value = item.description || "";
@@ -247,5 +259,46 @@ function displayBreadcrumbs() {
           `
       )
       .join("");
-  breadcrumbs.innerHTML += `<button>${currentFolder.name}</button>`
+  breadcrumbs.innerHTML += `<button>${currentFolder.name}</button>`;
+}
+
+function exportItems() {
+  const dataStr = JSON.stringify(currentItems, null, 2);
+  const blob = new Blob([dataStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "items.json";
+  link.click();
+  link.remove();
+
+  URL.revokeObjectURL(url);
+}
+
+function importItems() {
+  const input = document.querySelector(".header .import input");
+  const file = input.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    try {
+      const importedItems = JSON.parse(e.target.result);
+      console.log("Imported:", importedItems);
+      // Now you can update your UI or store them
+      currentItems = importedItems;
+      localStorage.setItem(`${projectName}_items`, JSON.stringify(currentItems));
+      displayItems();
+    } catch (err) {
+      alert("Invalid JSON file");
+    }
+  };
+  reader.readAsText(file);
+}
+
+function isFileSizeAllowed(file) {
+  const maxSize = 5 * 1024 * 1024; // 5 MB in bytes
+
+  return file.size > maxSize ? false : true
 }
