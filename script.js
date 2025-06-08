@@ -4,6 +4,7 @@ const searchBox = document.querySelector(".search-box");
 const breadcrumbs = document.querySelector(".breadcrumbs");
 const editModeBtn = document.querySelector(".edit-mode");
 
+const defaultIcon = "icon-default.png"
 const rootFolder = { id: null, name: "Root", path: [] };
 let currentItems = JSON.parse(localStorage.getItem(`${projectName}_items`)) || [];
 let currentFolder = rootFolder;
@@ -80,7 +81,7 @@ function displayItems(items) {
         (item) =>
           `
       <div class="item ${item.type}" onclick="handleItem('${item.id}')">
-        <img src="${item.icon}">
+        <img src="${item.icon || defaultIcon}">
         <p class="item-text truncated">${item.name}</p>
       </div>
     `
@@ -119,7 +120,13 @@ const ItemModal = (() => {
   const deleteBtn = element.querySelector(".delete");
   let currentItemType = "card";
 
-  function generateItem() {
+  iconFileInput.oninput = (event) => {
+    const file = event.target.files[0]
+
+    iconInput.style.backgroundImage = file ? `url(${URL.createObjectURL(file)})` : null
+  }
+
+  function getItemData() {
     const item = {
       id: crypto.randomUUID(),
       name: nameInput.value,
@@ -127,7 +134,7 @@ const ItemModal = (() => {
       parentId: currentFolder.id,
       path: [...currentFolder.path, { id: currentFolder.id, name: currentFolder.name }],
       description: descriptionInput.value,
-      icon: iconFileInput.value || "icon-default.png",
+      icon: iconFileInput.value ? URL.createObjectURL(iconFileInput.files[0]) : null,
     };
     return item;
   }
@@ -138,7 +145,7 @@ const ItemModal = (() => {
     iconFileInput.value = "";
     title.textContent = `Create a new ${currentItemType}`;
     submitBtn.textContent = "Create";
-    submitBtn.onclick = () => createItem(generateItem());
+    submitBtn.onclick = () => createItem(getItemData());
     deleteBtn.classList.toggle("hidden", true);
     iconInput.style.backgroundImage = null
     nameInput.value = "";
@@ -149,10 +156,10 @@ const ItemModal = (() => {
       submitBtn.textContent = "Update";
       deleteBtn.classList.toggle("hidden", false);
       const itemIndex = currentItems.indexOf(item);
-      submitBtn.onclick = () => updateItem(itemIndex, generateItem());
+      submitBtn.onclick = () => updateItem(itemIndex, getItemData());
       deleteBtn.onclick = () => deleteItem(itemIndex);
 
-      iconInput.style.backgroundImage = `url(${item.icon})`
+      iconInput.style.backgroundImage = `url(${item.icon || defaultIcon})`
 
       nameInput.value = item.name || "";
       descriptionInput.value = item.description || "";
@@ -240,5 +247,5 @@ function displayBreadcrumbs() {
           `
       )
       .join("");
-  breadcrumbs.innerHTML += currentFolder.name;
+  breadcrumbs.innerHTML += `<button>${currentFolder.name}</button>`
 }

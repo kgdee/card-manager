@@ -141,6 +141,7 @@ body {
 
 .header .finder-bar {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
 }
 
@@ -161,6 +162,7 @@ body {
 
 .header .breadcrumbs {
   display: flex;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 5px;
   cursor: pointer;
@@ -170,6 +172,7 @@ body {
   background-color: transparent;
   color: var(--text-color);
   font-size: 1rem;
+  white-space: nowrap;
 }
 
 .header .actions {
@@ -303,4 +306,10 @@ body {
 
 /* Small screens (Phones, up to 480px wide) */
 @media (max-width: 480px) {
+  .header .finder-bar {
+    flex-direction: column;
+  }
+  .header .finder-bar > * {
+    flex: 1;
+  }
 }
