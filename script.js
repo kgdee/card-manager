@@ -39,7 +39,7 @@ function getFileContent(file) {
 }
 
 function getItem(itemId) {
-  return currentItems.find((item) => item.id === itemId);
+  return currentItems.filter((item) => item.id === itemId)[0]
 }
 
 function createItem(item) {
@@ -53,21 +53,22 @@ function createItem(item) {
   Toast.show("Item has been successfully added");
 }
 
-function updateItem(index, updates) {
+function updateItem(itemId, updates) {
   if (!updates.name) return;
+  const item = getItem(itemId)
+  const updatedItem = { ...item, ...updates }
+  if (Object.keys(updates).every(key => updates[key] === item[key])) return Toast.show("Cannot update. There's nothing to update")
 
-  let item = currentItems[index];
-
-  const updatedItem = { ...item, ...updates };
-  currentItems[index] = updatedItem;
+  currentItems = currentItems.map((item) => (item.id === itemId ? updatedItem : item));
 
   localStorage.setItem(`${projectName}_items`, JSON.stringify(currentItems));
   displayItems();
   Toast.show("Item has been successfully updated");
 }
 
-function deleteItem(index) {
-  currentItems.splice(index, 1);
+function deleteItem(itemId) {
+  currentItems = currentItems.filter((item) => !(item.id === itemId || item.path.some((item) => item.id === itemId)));
+
   localStorage.setItem(`${projectName}_items`, JSON.stringify(currentItems));
   displayItems();
   Toast.show("Item has been successfully deleted");
@@ -86,7 +87,7 @@ function displayItems(items) {
       </div>
     `
       )
-      .join("") || "No items found";
+      .join("") || `<span class="message">No items found</span>`;
 }
 
 function handleItem(itemId) {
@@ -163,11 +164,11 @@ const ItemModal = (() => {
       deleteBtn.classList.toggle("hidden", false);
       const itemIndex = currentItems.indexOf(item);
       submitBtn.onclick = async () => {
-        updateItem(itemIndex, await getItemData(item));
+        updateItem(item.id, await getItemData(item));
         toggle();
       };
       deleteBtn.onclick = () => {
-        deleteItem(itemIndex);
+        deleteItem(item.id);
         toggle();
       };
 
@@ -196,7 +197,7 @@ const DetailsModal = (() => {
     descriptionEl.textContent = "Item description";
 
     if (item) {
-      imageEl.src = item.icon;
+      imageEl.src = item.icon || defaultIcon;
       nameEl.textContent = item.name;
       descriptionEl.textContent = item.description;
     }
@@ -266,6 +267,8 @@ function displayBreadcrumbs() {
 }
 
 function exportItems() {
+  if (currentItems.length <= 0) return Toast.show("Cannot export. There's no item to export");
+
   const dataStr = JSON.stringify(currentItems, null, 2);
   const blob = new Blob([dataStr], { type: "application/json" });
   const url = URL.createObjectURL(blob);
